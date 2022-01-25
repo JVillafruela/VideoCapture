@@ -50,7 +50,7 @@ object FMain: TFMain
       Top = 10
       Width = 113
       Height = 33
-      Caption = 'Start Video'
+      Caption = 'Start &Video'
       Enabled = False
       Glyph.Data = {
         76140000424D7614000000000000360000002800000048000000180000000100
@@ -749,28 +749,20 @@ object FMain: TFMain
       TabOrder = 4
       OnClick = BitBtn_StreamPropClick
     end
-    object CheckBox_Crosshair: TCheckBox
+    object CheckBox_FlipH: TCheckBox
       Left = 232
-      Top = 48
-      Width = 145
-      Height = 17
-      Caption = 'Add a cross-hair'
-      TabOrder = 5
-    end
-    object CheckBox_Mirror: TCheckBox
-      Left = 232
-      Top = 64
+      Top = 72
       Width = 145
       Height = 17
       Caption = 'Flip image horizontally'
-      TabOrder = 6
+      TabOrder = 5
     end
     object BitBtn_SaveJpg: TBitBtn
       Left = 471
       Top = 49
       Width = 123
       Height = 33
-      Caption = 'Quick Save'
+      Caption = 'Quick &Save'
       Enabled = False
       Glyph.Data = {
         76140000424D7614000000000000360000002800000048000000180000000100
@@ -938,7 +930,7 @@ object FMain: TFMain
         FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF
         00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
       NumGlyphs = 3
-      TabOrder = 7
+      TabOrder = 6
       OnClick = BitBtn_SaveJpgClick
     end
     object BitBtn_SaveAs: TBitBtn
@@ -1114,8 +1106,16 @@ object FMain: TFMain
         FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF
         00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
       NumGlyphs = 3
-      TabOrder = 8
+      TabOrder = 7
       OnClick = BitBtn_SaveAsClick
+    end
+    object CheckBox_FlipV: TCheckBox
+      Left = 232
+      Top = 49
+      Width = 145
+      Height = 17
+      Caption = 'Flip image vertically'
+      TabOrder = 8
     end
   end
   object SavePictureDialog1: TSavePictureDialog

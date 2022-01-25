@@ -17,11 +17,11 @@ type
     BitBtn_Stop: TBitBtn;
     BitBtn_Properties: TBitBtn;
     BitBtn_StreamProp: TBitBtn;
-    CheckBox_Crosshair: TCheckBox;
-    CheckBox_Mirror: TCheckBox;
+    CheckBox_FlipH: TCheckBox;
     BitBtn_SaveJpg: TBitBtn;
     SavePictureDialog1: TSavePictureDialog;
     BitBtn_SaveAs: TBitBtn;
+    CheckBox_FlipV: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure BitBtn_StartClick(Sender: TObject);
@@ -30,6 +30,7 @@ type
     procedure BitBtn_StreamPropClick(Sender: TObject);
     procedure BitBtn_SaveJpgClick(Sender: TObject);
     procedure BitBtn_SaveAsClick(Sender: TObject);
+
   private
     { Private declarations }
     fActivated  : boolean;
@@ -64,38 +65,31 @@ end;
 
 procedure TFMain.OnNewVideoFrame(Sender : TObject; Width, Height: integer; DataPtr: pointer);
 var
-  i, r : integer;
+  i, r,h,w : integer;
+  a,b,c,d :TPoint;
 begin
   // Retreive latest video image
   fVideoImage.GetBitmap(fVideoBitmap);
 
-  // Paint a crosshair onto video image
-  IF CheckBox_Crosshair.Checked then
-    begin
-      WITH fVideoBitmap.Canvas DO
-        BEGIN
-          Brush.Style := bsClear;
-          Pen.Width   := 3;
-          Pen.Color   := clRed;
-          moveto(0, fVideoBitmap.Height div 2);
-          lineto(fVideoBitmap.Width, fVideoBitmap.Height div 2);
-          moveto(fVideoBitmap.Width div 2, 0);
-          lineto(fVideoBitmap.Width div 2, fVideoBitmap.Height);
-          FOR i := 1 TO 3 DO
-            begin
-              r := (fVideoBitmap.Height div 8) *i;
-              ellipse(fVideoBitmap.Width div 2 -r, fVideoBitmap.Height div 2 -r,
-                      fVideoBitmap.Width div 2 +r, fVideoBitmap.Height div 2 +r);
-            end;
-        END;
-    end;
-
-  // Paint image onto screen, either normally or flipped.  
-  IF CheckBox_Mirror.Checked
-    then Paintbox1.Canvas.CopyRect(Rect(0, 0, fVideoBitmap.Width, fVideoBitmap.height),
-                                   fVideoBitmap.Canvas,
-                                   Rect(fVideoBitmap.Width-1, 0, 0, fVideoBitmap.height))
-    else Paintbox1.Canvas.Draw(0, 0, fVideoBitmap);
+  //   Source    Flip H    Flip V   Flip H+V
+  //  a-----b   b-----a   d-----c   c-----d
+  //  |     |   |     |   |     |   |     |
+  //  d-----c   c-----d   a-----b   b-----a
+  h := fVideoBitmap.height;
+  w := fVideoBitmap.Width;
+  a := Point(0,h);
+  b := Point(w,h);
+  c := Point(w,0);
+  d := Point(0,0);
+  // Paint image onto screen, either normally or flipped.
+  IF CheckBox_FlipH.Checked and not CheckBox_FlipV.Checked then
+    Paintbox1.Canvas.CopyRect(Rect(d,b), fVideoBitmap.Canvas, Rect(c,a))
+  else if CheckBox_FlipV.Checked  and not CheckBox_FlipH.Checked then
+    Paintbox1.Canvas.CopyRect(Rect(d,b), fVideoBitmap.Canvas, Rect(a,c))
+  else if CheckBox_FlipH.Checked and CheckBox_FlipV.Checked then
+    Paintbox1.Canvas.CopyRect(Rect(d,b), fVideoBitmap.Canvas, Rect(b,d))
+  else
+    Paintbox1.Canvas.Draw(0, 0, fVideoBitmap);
 end;
 
 
@@ -171,6 +165,9 @@ procedure TFMain.BitBtn_StreamPropClick(Sender: TObject);
 begin
   FVideoImage.ShowProperty_Stream;
 end;
+
+
+
 
 procedure TFMain.BitBtn_SaveAsClick(Sender: TObject);
 var
