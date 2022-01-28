@@ -9,7 +9,8 @@ uses
   DirectDraw in '..\DirectXDelphiWebcamCaptureDemos\Common\DirectX\DirectDraw.pas',
   DirectShow9 in '..\DirectXDelphiWebcamCaptureDemos\Common\DirectX\DirectShow9.pas',
   DirectSound in '..\DirectXDelphiWebcamCaptureDemos\Common\DirectX\DirectSound.pas',
-  DXTypes in '..\DirectXDelphiWebcamCaptureDemos\Common\DirectX\DXTypes.pas';
+  DXTypes in '..\DirectXDelphiWebcamCaptureDemos\Common\DirectX\DXTypes.pas',
+  Settings in 'Settings.pas';
 
 {$R *.res}
 

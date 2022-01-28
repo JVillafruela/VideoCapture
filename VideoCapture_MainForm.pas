@@ -4,8 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, jpeg,
-  Dialogs, ExtCtrls, StdCtrls, Buttons,
-  VFrames, ExtDlgs;
+  Dialogs, ExtCtrls, StdCtrls, Buttons,  VFrames, ExtDlgs,
+  Settings;
 
 type
   TFMain = class(TForm)
@@ -30,6 +30,7 @@ type
     procedure BitBtn_StreamPropClick(Sender: TObject);
     procedure BitBtn_SaveJpgClick(Sender: TObject);
     procedure BitBtn_SaveAsClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
 
   private
     { Private declarations }
@@ -48,6 +49,8 @@ implementation
 
 {$R *.dfm}
 
+
+
 procedure TFMain.FormCreate(Sender: TObject);
 begin
   PaintBox1.Align := alClient;
@@ -61,6 +64,12 @@ begin
   fVideoImage.OnNewVideoFrame := OnNewVideoFrame;
 end;
 
+procedure TFMain.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if Combobox1.Items.Count > 0 then
+    Settings.put('PHOTO','CAMERA', Combobox1.Text);
+
+end;
 
 
 procedure TFMain.OnNewVideoFrame(Sender : TObject; Width, Height: integer; DataPtr: pointer);
@@ -68,7 +77,7 @@ var
   i, r,h,w : integer;
   a,b,c,d :TPoint;
 begin
-  // Retreive latest video image
+  // Retrieve latest video image
   fVideoImage.GetBitmap(fVideoBitmap);
 
   //   Source    Flip H    Flip V   Flip H+V
@@ -98,6 +107,8 @@ end;
 procedure TFMain.FormActivate(Sender: TObject);
 var
   DeviceList : TStringList;
+  camera : String;
+  i : integer;
 begin
   IF fActivated then
     exit;
@@ -111,17 +122,27 @@ begin
   IF DeviceList.Count < 1 then
     begin
       // If no camera has been found, terminate program
-      Caption := 'Demo03  [No video device found]';
-      //MessageDlg('No video device found.'#10'Application will terminate.', mtError, [mbOK], 0);
-      ShowMessage('No video device found.'#10'Application will terminate.');
+      Caption := 'VideoCapture  [No video device found]';
+      MessageDlg('No video device found.'#10'Application will terminate.', mtError, [mbOK], 0);
       Application.Terminate;
       exit;
     end
-    else begin
+  else begin
       // If at least one camera has been found.
       Combobox1.items.Assign(DeviceList);
       Combobox1.ItemIndex := 0;
       BitBtn_Start.Enabled := true;
+
+      camera := Settings.get('PHOTO','CAMERA');
+      if camera <> '' then
+      begin
+        for i := 0 to  Combobox1.items.Count do
+          if Combobox1.items[i] = camera then
+          begin
+            Combobox1.ItemIndex := i;
+            break;
+          end;
+      end;
     end;
 end;
 
@@ -197,7 +218,15 @@ end;
 procedure TFMain.BitBtn_SaveJpgClick(Sender: TObject);
 VAR
   Jpg : TJPEGImage;
+  fileName : String;
 begin
+    fileName := Settings.get('PHOTO','PATH');
+    if fileName = '' then
+    begin
+      fileName := GetEnvironmentVariable('TEMP') + '\videocapture.jpg';
+      Settings.put('PHOTO','PATH',fileName);
+      MessageDlg('Quicksave button : image will be saved in '+fileName, mtInformation, [mbOK], 0);
+    end;
 
     Jpg := TJPEGImage.Create;
     Jpg.Performance := jpBestSpeed;
@@ -206,9 +235,9 @@ begin
     Jpg.Assign(fVideoBitmap);
     Jpg.CompressionQuality := 90;
     try
-      jpg.SaveToFile('E:\temp\test.jpg');
+      jpg.SaveToFile(fileName);
     except
-      MessageDlg('Could not save jpg file E:\temp\test.jpg', mterror, [mbOK], 0);
+      MessageDlg('Could not save jpg file '+ fileName, mterror, [mbOK], 0);
     end;
     Jpg.Free;
 

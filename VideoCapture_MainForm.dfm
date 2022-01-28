@@ -14,6 +14,7 @@ object FMain: TFMain
   Position = poScreenCenter
   Scaled = False
   OnActivate = FormActivate
+  OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
