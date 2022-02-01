@@ -74,7 +74,7 @@ end;
 
 procedure TFMain.OnNewVideoFrame(Sender : TObject; Width, Height: integer; DataPtr: pointer);
 var
-  i, r,h,w : integer;
+  h,w : integer;
   a,b,c,d :TPoint;
 begin
   // Retrieve latest video image
@@ -188,36 +188,45 @@ begin
 end;
 
 
-
+procedure SaveToFile(canvas: TCanvas; filename : string);
+var
+  bmp : TBitmap;
+  jpg : TJPEGImage;
+  width, height : integer;
+begin
+    bmp := TBitmap.Create;
+    try
+      width := canvas.ClipRect.Right;
+      height := canvas.ClipRect.Bottom;
+      bmp.SetSize(width, height);
+      BitBlt(bmp.Canvas.Handle, 0, 0, width, height, canvas.Handle, 0, 0, SRCCOPY);
+      try
+        jpg := TJPEGImage.Create;
+        jpg.Performance := jpBestSpeed;
+        jpg.ProgressiveEncoding := True;
+        jpg.ProgressiveDisplay := True;
+        jpg.CompressionQuality := 90;
+        jpg.Assign(bmp);
+        jpg.SaveToFile(fileName);
+      except
+        MessageDlg('Could not save jpg file '+ fileName, mterror, [mbOK], 0);
+      end;
+      jpg.Free;
+    finally
+      bmp.Free;
+    end;
+end;
 
 procedure TFMain.BitBtn_SaveAsClick(Sender: TObject);
-var
-  Jpg : TJPEGImage;
 begin
-
-  IF SavePictureDialog1.Execute then
+  if SavePictureDialog1.Execute then
     begin
-      Jpg := TJPEGImage.Create;
-      Jpg.Performance := jpBestSpeed;
-      Jpg.ProgressiveEncoding := True;
-      Jpg.ProgressiveDisplay := True;
-      Jpg.Assign(fVideoBitmap);
-      Jpg.CompressionQuality := 90;
-      Jpg.Compress;
-      try
-        // Will not save the flipping. Sorry, I'm a lazy guy...
-        jpg.SaveToFile(SavePictureDialog1.FileName);
-      except
-        MessageDlg('Could not save file ' + SavePictureDialog1.FileName + '!', mterror, [mbOK], 0);
-      end;
-      Jpg.Free;
+      SaveToFile(Paintbox1.canvas, SavePictureDialog1.FileName);
     end;
-
 end;
 
 procedure TFMain.BitBtn_SaveJpgClick(Sender: TObject);
-VAR
-  Jpg : TJPEGImage;
+var
   fileName : String;
 begin
     fileName := Settings.get('PHOTO','PATH');
@@ -228,20 +237,10 @@ begin
       MessageDlg('Quicksave button : image will be saved in '+fileName, mtInformation, [mbOK], 0);
     end;
 
-    Jpg := TJPEGImage.Create;
-    Jpg.Performance := jpBestSpeed;
-    Jpg.ProgressiveEncoding := True;
-    Jpg.ProgressiveDisplay := True;
-    Jpg.Assign(fVideoBitmap);
-    Jpg.CompressionQuality := 90;
-    try
-      jpg.SaveToFile(fileName);
-    except
-      MessageDlg('Could not save jpg file '+ fileName, mterror, [mbOK], 0);
-    end;
-    Jpg.Free;
+    SaveToFile(Paintbox1.canvas, filename);
+end;
 
-  end;
+
 
 
 end.
