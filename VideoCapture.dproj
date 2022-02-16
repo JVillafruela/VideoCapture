@@ -101,13 +101,13 @@
         <DCCReference Include="VideoCapture_MainForm.pas">
             <Form>FMain</Form>
         </DCCReference>
-        <DCCReference Include="..\DirectXDelphiWebcamCaptureDemos\Common\VFrames.pas"/>
-        <DCCReference Include="..\DirectXDelphiWebcamCaptureDemos\Common\VSample.pas"/>
-        <DCCReference Include="..\DirectXDelphiWebcamCaptureDemos\Common\DirectX\Direct3D9.pas"/>
-        <DCCReference Include="..\DirectXDelphiWebcamCaptureDemos\Common\DirectX\DirectDraw.pas"/>
-        <DCCReference Include="..\DirectXDelphiWebcamCaptureDemos\Common\DirectX\DirectShow9.pas"/>
-        <DCCReference Include="..\DirectXDelphiWebcamCaptureDemos\Common\DirectX\DirectSound.pas"/>
-        <DCCReference Include="..\DirectXDelphiWebcamCaptureDemos\Common\DirectX\DXTypes.pas"/>
+        <DCCReference Include=".\Common\VFrames.pas"/>
+        <DCCReference Include=".\Common\VSample.pas"/>
+        <DCCReference Include=".\Common\DirectX\Direct3D9.pas"/>
+        <DCCReference Include=".\Common\DirectX\DirectDraw.pas"/>
+        <DCCReference Include=".\Common\DirectX\DirectShow9.pas"/>
+        <DCCReference Include=".\Common\DirectX\DirectSound.pas"/>
+        <DCCReference Include=".\Common\DirectX\DXTypes.pas"/>
         <DCCReference Include="Settings.pas"/>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_2</Key>

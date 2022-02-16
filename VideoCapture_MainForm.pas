@@ -195,6 +195,7 @@ var
   width, height : integer;
 begin
     bmp := TBitmap.Create;
+    FMain.BitBtn_Stop.Click;
     try
       width := canvas.ClipRect.Right;
       height := canvas.ClipRect.Bottom;
@@ -215,6 +216,7 @@ begin
     finally
       bmp.Free;
     end;
+    FMain.BitBtn_Start.Click;
 end;
 
 procedure TFMain.BitBtn_SaveAsClick(Sender: TObject);
